@@ -13,7 +13,7 @@ import com.google.gson.GsonBuilder;
 public class Main {
 
 	public static void main(String[] args) throws IOException, InterruptedException {
-		String apiKey = "6b8468f14301471eae801670084dc2b5"; // Replace with your actual API key
+		String apiKey = "USE YOUR API KEY"; // Replace with your actual API key
 		CurrencyData currencyData = getCurrencyData(apiKey);
 		
 		System.out.println("Base currency: " + currencyData.getBase());
