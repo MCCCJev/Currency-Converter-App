@@ -23,7 +23,6 @@ public class Main {
     		System.out.println("USD exchange rate: " + rates.getUSD());
     		System.out.println("EUR exchange rate: " + rates.getEUR());
     		System.out.println("JPY exchange rate: " + rates.getJPY());
-
 	}
 
 	private static CurrencyData getCurrencyData(String apiKey) throws IOException, InterruptedException {
