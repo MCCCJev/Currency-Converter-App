@@ -11,9 +11,8 @@ import com.google.gson.GsonBuilder;
 
 
 public class Main {
-
 	public static void main(String[] args) throws IOException, InterruptedException {
-		String apiKey = "USE YOUR API KEY"; // Replace with your actual API key
+		String apiKey = System.getenv("OPENEXCHANGERATES_API_KEY"); // Replace with your actual API key
 		CurrencyData currencyData = getCurrencyData(apiKey);
 		
 		System.out.println("Base currency: " + currencyData.getBase());
