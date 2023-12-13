@@ -6,6 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.util.*;
 
+import java.io.IOException;
+
 public class CurrencyConverterMain extends Application
 {
 	public static void main(String[] args)
@@ -15,10 +17,25 @@ public class CurrencyConverterMain extends Application
 	}
 
 	@Override
-	public void start(Stage primaryStage) throws Exception
+	public void start(Stage stage) throws Exception
 	{
-		primaryStage.setTitle("Currency Converter");
+		// Load FXML 
+		Parent root = FXMLLoader.load(getClass().getResource("MainView.fxml"));
 
-		primaryStage.show();
+		// Create scene
+		Scene scene = new Scene(root);
+
+		// Set scene and title of stage
+		stage.setScene(scene);
+		stage.setTitle("Currency Converter");
+
+		// Show stage
+		stage.show();
+	}
+
+	@Override
+	public void stop()
+	{
+		System.out.println("Stop is called in Application class");
 	}
 }
