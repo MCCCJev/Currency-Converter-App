@@ -50,7 +50,7 @@ public class CurrencyConverterController {
 	    }
 	    private void populateComboBoxes() {
 		    // URL for OpenExchangeRates API to get latest currencies
-		    String url = "https://openexchangerates.org/api/currencies?app_id=YOUR_API_KEY";
+		    String url = "https://openexchangerates.org/api/currencies.json";
 		    // Replace "YOUR_API_KEY" with your actual API key
 		    String apiKey = System.getenv("OPENEXCHANGERATES_API_KEY");
 		    
