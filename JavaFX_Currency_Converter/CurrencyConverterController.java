@@ -2,7 +2,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import java.util.Map;
@@ -109,8 +108,11 @@ public class CurrencyConverterController {
 
 				    Map<String, Double> ratesMap = new Gson().fromJson(response, Map.class);
 				    double conversionRate = ratesMap.get(toCurrency);
-				    double convertedAmount = amount * conversionRate;
-				    convertedAmountTextField.setText(String.format("%.2f", convertedAmount));
+				    double convertedAmount = (amount * conversionRate);
+
+				    Platform.runLater(() -> {
+					    convertedAmountTextField.setText(String.format("%.2f", convertedAmount));
+				    });
 			    });
 
 			    } catch (Exception e) {
