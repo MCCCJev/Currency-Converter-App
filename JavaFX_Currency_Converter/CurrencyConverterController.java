@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import java.util.Map;
+import java.util.Locale;
 import java.util.prefs.Preferences;
 
 import java.net.http.HttpClient;
@@ -33,15 +34,35 @@ public class CurrencyConverterController {
 	@FXML
 	private Button convertButton;
 
+	public static final String FROM_CURRENCY_KEY = "user.preffered.from.currency";
+	public static final String TO_CURRENCY_KEY = "user.preffered.to.currency";
+
 	@FXML
 	public void initialize() {
 		// Populate comboboxes with currencies
 		populateComboBoxes();
+
+		// Update preferrec currency based on saved values
+		Preferences prefs = Preferences.userRoot().node("currency_converter_settings");
+		String savedFromCurrency = prefs.get(FROM_CURRENCY_KEY, Locale.getDefault().getCountry());
+		String savedToCurrency = prefs.get(TO_CURRENCY_KEY, Locale.getDefault().getCountry());
+		fromComboBox.getSelectionModel().select(savedFromCurrency);
+		fromComboBox.getSelectionModel().select(savedToCurrency);
+
+		// Hande currency selection changes
+		fromComboBox.setOnAction(event -> {
+			String selectedCurrency = fromComboBox.getSelectionModel().getSelectedItem();
+			prefs.put(FROM_CURRENCY_KEY, selectedCurrency);
+		});
+
+		toComboBox.setOnAction(event -> {
+			String selectedCurrency = toComboBox.getSelectionModel().getSelectedItem();
+			prefs.put(TO_CURRENCY_KEY, selectedCurrency);
+		});
     		
 		// Handle convert button click
 		convertButton.setOnAction(event -> {
 		    try {
-
 			convertCurrency();
 		    } catch (Exception e) {
 			// Handle conversion errors
@@ -121,4 +142,3 @@ public class CurrencyConverterController {
 			    }
 	    }
 }
-
