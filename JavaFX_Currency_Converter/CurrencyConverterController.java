@@ -37,12 +37,14 @@ public class CurrencyConverterController {
 	public static final String FROM_CURRENCY_KEY = "user.preferred.from.currency";
 	public static final String TO_CURRENCY_KEY = "user.preferred.to.currency";
 
+	public double amount = 0.0;
+
 	@FXML
 	public void initialize() {
 		// Populate comboboxes with currencies
 		populateComboBoxes();
 
-		// Update preferrec currency based on saved values
+		// Update preferred currency based on saved values
 		Preferences prefs = Preferences.userRoot().node("currency_converter_settings");
 		String savedFromCurrency = prefs.get(FROM_CURRENCY_KEY, Locale.getDefault().getCountry());
 		String savedToCurrency = prefs.get(TO_CURRENCY_KEY, Locale.getDefault().getCountry());
@@ -58,6 +60,15 @@ public class CurrencyConverterController {
 			String selectedCurrency = toComboBox.getSelectionModel().getSelectedItem();
 			prefs.put(TO_CURRENCY_KEY, selectedCurrency);
 		});
+
+		// Text listener for amount input
+		amountTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+			try {
+				amount = Double.parseDouble(newValue);
+			} catch (NumberFormatException e) {
+				System.err.println("Invalid amount entered: " + e.getMessage());
+			}
+		});
     		
 		// Handle convert button click
 		convertButton.setOnAction(event -> {
@@ -72,8 +83,6 @@ public class CurrencyConverterController {
 	    private void populateComboBoxes() {
 		    // URL for OpenExchangeRates API to get latest currencies
 		    String url = "https://openexchangerates.org/api/currencies.json";
-		    // Replace "YOUR_API_KEY" with your actual API key
-
 		    
 		    try (HttpClient client = HttpClient.newHttpClient()) {
 			    HttpRequest request = HttpRequest.newBuilder()
@@ -92,11 +101,9 @@ public class CurrencyConverterController {
 					    Map<String, String> currenciesMap = new Gson().fromJson(response, Map.class);
 
 					    Platform.runLater(() -> {
-
 						    // Add new currency list to comboboxes
 						    fromComboBox.getItems().addAll(currenciesMap.keySet());
 						    toComboBox.getItems().addAll(currenciesMap.keySet());
-
 			    });
 		    });
 			    } catch (Exception e) {
@@ -104,14 +111,13 @@ public class CurrencyConverterController {
 			    }
 	    }
 	    private void convertCurrency() {
-		    double amount = Double.parseDouble(amountTextField.getText());
 		    String fromCurrency = fromComboBox.getSelectionModel().getSelectedItem();
 		    String toCurrency = toComboBox.getSelectionModel().getSelectedItem();
 		    
 		    // Replace "YOUR_API_KEY" with your actual API key
 		    String apiKey = System.getenv("OPENEXCHANGERATES_API_KEY");
 		    // Build the URL for the conversion rate API call
-		    String url = "https://openexchangerates.org/api/latest?base=" + fromCurrency + "&symbols=" + toCurrency + "&app_id=" + apiKey;
+		    String url = "https://openexchangerates.org/api/latest.json?base=" + fromCurrency + "&symbols=" + toCurrency + "&app_id=" + apiKey;
 
 		    try (HttpClient client = HttpClient.newHttpClient()) {
 			    HttpRequest request = HttpRequest.newBuilder()
@@ -127,17 +133,24 @@ public class CurrencyConverterController {
 					    return;
 				    }
 
-				    Map<String, Double> ratesMap = new Gson().fromJson(response, Map.class);
-				    double conversionRate = ratesMap.get(toCurrency);
-				    double convertedAmount = (amount * conversionRate);
+				    try {
+					    Map<String, Double> ratesMap = new Gson().fromJson(response, Map.class);
+					    double conversionRate = ratesMap.get(toCurrency);
 
-				    Platform.runLater(() -> {
-					    convertedAmountTextField.setText(String.format("%.2f", convertedAmount));
+					    if (conversionRate == 0.0) {
+						    System.err.println("Invalid conversion rate for " + fromCurrency + " to " + toCurrency);
+					    }
+					    
+					    double convertedAmount = amount * conversionRate;
+					    Platform.runLater(() -> {
+						    convertedAmountTextField.setText(String.format("%.2f", convertedAmount));
 				    });
-			    });
-
-			    } catch (Exception e) {
-				    System.err.println("Error fetching conversion rate: " + e.getMessage());
+			    } catch (NumberFormatException e) {
+				    System.err.println("Invalid amount entered: " + e.getMessage());
 			    }
+		    });
+		    } catch (Exception e) {
+			    System.err.println("Error fetching conversion rate: " + e.getMessage());
+		    }
 	    }
 }

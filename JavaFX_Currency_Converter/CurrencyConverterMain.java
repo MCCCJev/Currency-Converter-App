@@ -27,6 +27,7 @@ public class CurrencyConverterMain extends Application
 
 		// Set scene and title of stage
 		stage.setScene(scene);
+		stage.setResizable(false);
 		stage.setTitle("Currency Converter");
 
 		// Show stage

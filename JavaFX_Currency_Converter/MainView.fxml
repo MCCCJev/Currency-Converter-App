@@ -36,29 +36,53 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CurrencyConverterController">
+<VBox prefHeight="400.0" prefWidth="640.0" style="-fx-background-color: #4A6572;" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CurrencyConverterController">
   <children>
-    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="NEVER">
+      <TitledPane accessibleRole="MENU_BAR" animated="false" collapsible="false" expanded="false" prefHeight="32.0" prefWidth="640.0" text="CURRENCY CONVERTER">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="0.0" prefWidth="638.0" style="-fx-background-color: #344955;" />
+        </content>
+         <font>
+            <Font name="Roboto Bold" size="14.0" />
+         </font>
+      </TitledPane>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <children>
-            <ComboBox fx:id="fromComboBox" layoutX="8.0" layoutY="43.0" onAction="#initialize" prefHeight="51.0" prefWidth="172.0" promptText="Select Currency 1">
+            <ComboBox fx:id="fromComboBox" blendMode="SRC_ATOP" layoutX="27.0" layoutY="29.0" onAction="#initialize" prefHeight="51.0" prefWidth="172.0" promptText="Select Currency 1">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ComboBox>
-            <ComboBox fx:id="toComboBox" layoutX="462.0" layoutY="43.0" onAction="#initialize" prefHeight="51.0" prefWidth="164.0" promptText="Select Currency 2">
+            <ComboBox fx:id="toComboBox" layoutX="416.0" layoutY="29.0" onAction="#initialize" prefHeight="51.0" prefWidth="172.0" promptText="Select Currency 2">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ComboBox>
-            <TextField fx:id="amountTextField" layoutX="240.0" layoutY="59.0" onAction="#initialize" prefHeight="18.0" prefWidth="164.0" promptText="Input amount to convert" />
-            <TextField fx:id="convertedAmountTextField" alignment="CENTER" editable="false" layoutX="245.0" layoutY="283.0" onAction="#initialize" />
-            <Button fx:id="convertButton" layoutX="293.0" layoutY="191.0" mnemonicParsing="false" onAction="#initialize" scaleX="4.0" scaleY="4.0" text="Convert" />
-            <Text layoutX="187.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" text="From" />
-            <Text layoutX="424.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To" />
+            <TextField fx:id="amountTextField" layoutX="228.0" layoutY="42.0" prefHeight="18.0" prefWidth="164.0" promptText="Input amount to convert" />
+            <TextField fx:id="convertedAmountTextField" editable="false" layoutX="224.0" layoutY="209.0" onAction="#initialize" prefHeight="43.0" prefWidth="172.0">
+               <font>
+                  <Font size="26.0" />
+               </font></TextField>
+            <Button fx:id="convertButton" layoutX="259.0" layoutY="142.0" mnemonicParsing="false" onAction="#initialize" prefHeight="43.0" prefWidth="102.0" style="-fx-background-color: #F9AA33;" text="Convert" textFill="#0d0000">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font></Button>
+            <Text fill="WHITE" layoutX="487.0" layoutY="173.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To" underline="true">
+               <font>
+                  <Font size="26.0" />
+               </font>
+            </Text>
+            <Text fill="WHITE" layoutX="81.0" layoutY="173.0" strokeType="OUTSIDE" strokeWidth="0.0" text="From" underline="true">
+               <font>
+                  <Font size="26.0" />
+               </font>
+            </Text>
       </children>
     </AnchorPane>
   </children>
