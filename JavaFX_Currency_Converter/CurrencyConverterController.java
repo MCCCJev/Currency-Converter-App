@@ -1,3 +1,4 @@
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -6,7 +7,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import java.util.Map;
 import java.util.prefs.Preferences;
-import javafx.application.Platform;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -37,10 +37,11 @@ public class CurrencyConverterController {
 	public void initialize() {
 		// Populate comboboxes with currencies
 		populateComboBoxes();
-
+    		
 		// Handle convert button click
 		convertButton.setOnAction(event -> {
 		    try {
+
 			convertCurrency();
 		    } catch (Exception e) {
 			// Handle conversion errors
