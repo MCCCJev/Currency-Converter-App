@@ -34,8 +34,8 @@ public class CurrencyConverterController {
 	@FXML
 	private Button convertButton;
 
-	public static final String FROM_CURRENCY_KEY = "user.preffered.from.currency";
-	public static final String TO_CURRENCY_KEY = "user.preffered.to.currency";
+	public static final String FROM_CURRENCY_KEY = "user.preferred.from.currency";
+	public static final String TO_CURRENCY_KEY = "user.preferred.to.currency";
 
 	@FXML
 	public void initialize() {
@@ -47,14 +47,13 @@ public class CurrencyConverterController {
 		String savedFromCurrency = prefs.get(FROM_CURRENCY_KEY, Locale.getDefault().getCountry());
 		String savedToCurrency = prefs.get(TO_CURRENCY_KEY, Locale.getDefault().getCountry());
 		fromComboBox.getSelectionModel().select(savedFromCurrency);
-		fromComboBox.getSelectionModel().select(savedToCurrency);
+		toComboBox.getSelectionModel().select(savedToCurrency);
 
 		// Hande currency selection changes
 		fromComboBox.setOnAction(event -> {
 			String selectedCurrency = fromComboBox.getSelectionModel().getSelectedItem();
 			prefs.put(FROM_CURRENCY_KEY, selectedCurrency);
 		});
-
 		toComboBox.setOnAction(event -> {
 			String selectedCurrency = toComboBox.getSelectionModel().getSelectedItem();
 			prefs.put(TO_CURRENCY_KEY, selectedCurrency);
