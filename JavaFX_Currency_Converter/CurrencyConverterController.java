@@ -17,6 +17,7 @@ import java.net.URL;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.io.IOException;
+import java.text.*;
 
 import com.google.gson.Gson;
 
@@ -52,7 +53,7 @@ public class CurrencyConverterController {
 		    // URL for OpenExchangeRates API to get latest currencies
 		    String url = "https://openexchangerates.org/api/currencies.json";
 		    // Replace "YOUR_API_KEY" with your actual API key
-		    String apiKey = System.getenv("OPENEXCHANGERATES_API_KEY");
+
 		    
 		    try (HttpClient client = HttpClient.newHttpClient()) {
 			    HttpRequest request = HttpRequest.newBuilder()
@@ -69,13 +70,15 @@ public class CurrencyConverterController {
 					    }
 
 					    Map<String, String> currenciesMap = new Gson().fromJson(response, Map.class);
-					    
-					    fromComboBox.getItems().addAll(currenciesMap.keySet());
-					    toComboBox.getItems().addAll(currenciesMap.keySet());
 
-					    fromComboBox.getSelectionModel().selectFirst();
-					    toComboBox.getSelectionModel().select(1); // assuming second item is a different currency
-					    });
+					    Platform.runLater(() -> {
+
+						    // Add new currency list to comboboxes
+						    fromComboBox.getItems().addAll(currenciesMap.keySet());
+						    toComboBox.getItems().addAll(currenciesMap.keySet());
+
+			    });
+		    });
 			    } catch (Exception e) {
 				    System.err.println("Error fetching currencies: " + e.getMessage());
 			    }
@@ -84,10 +87,9 @@ public class CurrencyConverterController {
 		    double amount = Double.parseDouble(amountTextField.getText());
 		    String fromCurrency = fromComboBox.getSelectionModel().getSelectedItem();
 		    String toCurrency = toComboBox.getSelectionModel().getSelectedItem();
-
+		    
 		    // Replace "YOUR_API_KEY" with your actual API key
 		    String apiKey = System.getenv("OPENEXCHANGERATES_API_KEY");
-
 		    // Build the URL for the conversion rate API call
 		    String url = "https://openexchangerates.org/api/latest?base=" + fromCurrency + "&symbols=" + toCurrency + "&app_id=" + apiKey;
 
@@ -106,14 +108,14 @@ public class CurrencyConverterController {
 				    }
 
 				    Map<String, Double> ratesMap = new Gson().fromJson(response, Map.class);
-				    
 				    double conversionRate = ratesMap.get(toCurrency);
 				    double convertedAmount = amount * conversionRate;
 				    convertedAmountTextField.setText(String.format("%.2f", convertedAmount));
 			    });
 
-		    } catch (Exception e) {
-			    System.err.println("Error fetching conversion rate: " + e.getMessage());
-		    }
+			    } catch (Exception e) {
+				    System.err.println("Error fetching conversion rate: " + e.getMessage());
+			    }
 	    }
 }
+
