@@ -99,7 +99,7 @@
     </MenuBar>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <children>
-            <ComboBox fx:id="fromComboBox" blendMode="SRC_ATOP" layoutX="30.0" layoutY="29.0" onAction="#initialize" prefHeight="51.0" prefWidth="172.0" promptText="Select Currency 1">
+            <ComboBox fx:id="fromComboBox" blendMode="SRC_ATOP" layoutX="27.0" layoutY="29.0" onAction="#initialize" prefHeight="51.0" prefWidth="172.0" promptText="Select Currency 1">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
