@@ -99,7 +99,7 @@
                </font>
             </Button>
             <TextField fx:id="amountTextField" layoutX="218.0" layoutY="38.0" onAction="#initialize" prefHeight="34.0" prefWidth="184.0" promptText="Inpuit amount to convert" />
-            <TextField fx:id="convertedAmountTextField" editable="false" layoutX="224.0" layoutY="239.0" onAction="#initialize" prefHeight="43.0" prefWidth="172.0" promptText="Converted Output" />
+            <TextField fx:id="convertedAmountTextField" editable="false" layoutX="224.0" layoutY="239.0" onAction="#initialize" prefHeight="43.0" prefWidth="172.0" />
             <Text fill="#e1cece" layoutX="70.0" layoutY="135.0" strokeType="OUTSIDE" strokeWidth="0.0" text="From">
                <font>
                   <Font name="System Bold" size="26.0" />

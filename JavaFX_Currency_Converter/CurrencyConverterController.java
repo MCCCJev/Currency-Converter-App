@@ -1,7 +1,9 @@
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -61,19 +63,13 @@ public class CurrencyConverterController {
 			String selectedCurrency = toComboBox.getSelectionModel().getSelectedItem();
 			prefs.put(TO_CURRENCY_KEY, selectedCurrency);
 		});
+		
 
-		// Text listener for amount input
-		amountTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-			try {
-				amount = Double.parseDouble(newValue);
-			} catch (NumberFormatException e) {
-				System.err.println("Invalid amount entered: " + e.getMessage());
-			}
-		});
-    		
+    	
 		// Handle convert button click
 		convertButton.setOnAction(event -> {
 		    try {
+			String amountText = amountTextField.getText();
 			convertCurrency();
 		    } catch (Exception e) {
 			// Handle conversion errors
@@ -111,47 +107,71 @@ public class CurrencyConverterController {
 				    System.err.println("Error fetching currencies: " + e.getMessage());
 			    }
 	    }
-	    private void convertCurrency() {
+	    private void convertCurrency() throws IOException {
 		    String fromCurrency = fromComboBox.getSelectionModel().getSelectedItem();
-		    String toCurrency = toComboBox.getSelectionModel().getSelectedItem();
-		    
+		    String toCurrency = toComboBox.getSelectionModel().getSelectedItem();	    
 		    // Replace "YOUR_API_KEY" with your actual API key
 		    String apiKey = System.getenv("OPENEXCHANGERATES_API_KEY");
 		    // Build the URL for the conversion rate API call
 		    String url = "https://openexchangerates.org/api/latest.json?base=" + fromCurrency + "&symbols=" + toCurrency + "&app_id=" + apiKey;
-
-		    try (HttpClient client = HttpClient.newHttpClient()) {
-			    HttpRequest request = HttpRequest.newBuilder()
-			    .GET()
-			    .uri(URI.create(url))
-			    .build();
+		    HttpClient client = HttpClient.newHttpClient();
+		    HttpRequest request = HttpRequest.newBuilder()
+		    .GET()
+		    .uri(URI.create(url))
+		    .build();
+			    
 			    client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-
 			    .thenApply(HttpResponse::body)
 			    .whenComplete((response, error) -> {
 				    if (error != null) {
-					    System.err.println("Error fetching conversion rate: " + error.getMessage());
+					    // Handle network error with Alert
+					    Platform.runLater(() -> {
+						    Alert alert = new Alert(Alert.AlertType.ERROR);
+						    alert.setTitle("Error");
+						    alert.setHeaderText("Network Error");
+						    alert.setContentText("Unable to connect to the currency exchange service. Please check your internet connection and try again.");
+						    alert.showAndWait();
+					    });
 					    return;
 				    }
 
 				    try {
-					    Map<String, Double> ratesMap = new Gson().fromJson(response, Map.class);
-					    double conversionRate = ratesMap.get(toCurrency);
+					    // Parse JSON response to CurrencyRates object
+					    Map<String, Object> responseMap = new Gson().fromJson(response, Map.class);
 
-					    if (conversionRate == 0.0) {
-						    System.err.println("Invalid conversion rate for " + fromCurrency + " to " + toCurrency);
-					    }
-					    
-					    double convertedAmount = amount * conversionRate;
+					    // Extract rates map
+					    Map<String, Double> ratesMap = (Map<String, Double>) responseMap.get("rates");
+
+					     // Check if requested currency rate exists
+					     if (!ratesMap.containsKey(toCurrency)) {
+						     Platform.runLater(() -> {
+							     Alert alert = new Alert(Alert.AlertType.ERROR);
+							     alert.setTitle("Error");
+							     alert.setHeaderText("Rate Unavailable");
+							     alert.setContentText("Unable to obtain the exchange rate for the selected currency. Please try again later.");
+							     alert.showAndWait();
+						     });
+						     return;
+					     }
+
+					     // Get and apply conversion rate
+					     double amount = Double.parseDouble(amountTextField.getText());
+					     double rate = ratesMap.get(toCurrency);
+
+					     // Update UI with converted amount
+					     Platform.runLater(() -> {
+						     convertedAmountTextField.setText(String.format("%.2f", amount * rate));
+					     });
+				    } catch (Exception e) {
+					    // Handle parsing or conversion errors
 					    Platform.runLater(() -> {
-						    convertedAmountTextField.setText(String.format("%.2f", convertedAmount));
-				    });
-			    } catch (NumberFormatException e) {
-				    System.err.println("Invalid amount entered: " + e.getMessage());
-			    }
-		    });
-		    } catch (Exception e) {
-			    System.err.println("Error fetching conversion rate: " + e.getMessage());
-		    }
+						    Alert alert = new Alert(Alert.AlertType.ERROR);
+						    alert.setTitle("Error");
+						    alert.setHeaderText("Conversion Error");
+						    alert.setContentText("An error occurred while converting the amount. Please ensure you entered a valid number.");
+						    alert.showAndWait();
+					    });
+				    }
+			    });
 	    }
 }
